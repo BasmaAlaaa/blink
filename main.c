@@ -201,7 +201,7 @@ const uint TRIG_PIN = 6;
 const uint ECHO_PIN = 7;
 const int LEFT_ANGLE = 0;
 const int RIGHT_ANGLE = 180;
-const float THRESHOLD = 20.0; // in centimeters
+const float THRESHOLD = 30.0; // in centimeters
 
 // Initialize system
 void init()
@@ -300,76 +300,94 @@ int main()
 {
    init();
 
-   // while (true)
-   // {
-   //    if (read_ir_sensor() == 1)
-   //    {
-   //       // Activate both vibration motors to signal a hole
-   //       gpio_put(LEFT_VIBRATION_MOTOR_PIN, 1);
-   //       gpio_put(RIGHT_VIBRATION_MOTOR_PIN, 1);
-   //    }
-   //    else
-   //    {
-   //       float distance = read_ultrasonic();
-   //       if (distance < THRESHOLD)
-   //       { // Define a suitable threshold
-   //          // Activate buzzer
-   //          gpio_put(BUZZER_PIN, 1);
-
-   //          // Check path to the left
-   //          move_servo(LEFT_ANGLE); // Define LEFT_ANGLE
-   //          sleep_ms(500);          // Wait for the servo to move and sensor to stabilize
-   //          float left_distance = read_ultrasonic();
-
-   //          // Check path to the right
-   //          move_servo(RIGHT_ANGLE); // Define RIGHT_ANGLE
-   //          sleep_ms(500);           // Wait for the servo to move and sensor to stabilize
-   //          float right_distance = read_ultrasonic();
-
-   //          // Compare distances and activate the corresponding vibration motor
-   //          if (left_distance > right_distance)
-   //          {
-   //             gpio_put(LEFT_VIBRATION_MOTOR_PIN, 1);
-   //             gpio_put(RIGHT_VIBRATION_MOTOR_PIN, 0);
-   //          }
-   //          else
-   //          {
-   //             gpio_put(LEFT_VIBRATION_MOTOR_PIN, 0);
-   //             gpio_put(RIGHT_VIBRATION_MOTOR_PIN, 1);
-   //          }
-   //       }
-   //       else
-   //       {
-   //          // Deactivate all alert systems
-   //          gpio_put(BUZZER_PIN, 0);
-   //          gpio_put(LEFT_VIBRATION_MOTOR_PIN, 0);
-   //          gpio_put(RIGHT_VIBRATION_MOTOR_PIN, 0);
-   //       }
-   //    }
-
-   //    sleep_ms(1000); // Main loop delay
-   // }
-   while (true){
-      if(read_ir_sensor()==  1){
-     gpio_put (BUZZER_PIN, 0);
+   while (true)
+   {
+ 
+      if (read_ir_sensor() == 1)
+      {
+         // Activate both vibration motors to signal a hole
+         gpio_put(LEFT_VIBRATION_MOTOR_PIN, 0);
+         gpio_put(RIGHT_VIBRATION_MOTOR_PIN, 0);
       }
       else{
-         gpio_put (BUZZER_PIN, 1);
+          gpio_put(LEFT_VIBRATION_MOTOR_PIN, 1);
+         gpio_put(RIGHT_VIBRATION_MOTOR_PIN, 1);
       }
-      move_servo(90);
-     gpio_put (LEFT_VIBRATION_MOTOR_PIN, 1);
-      gpio_put (RIGHT_VIBRATION_MOTOR_PIN, 1);
-     float distance = read_ultrasonic();
-       if(distance<10){
-                gpio_put(BUZZER_PIN, true);
-              sleep_ms(1000);  //Buzzer on for 100ms
-               gpio_put(BUZZER_PIN, false);
-         sleep_ms(500);
-          }
-                printf("Distance: %.2f cm\n", distance);
+     
+         float distance = read_ultrasonic();
+         if (distance < THRESHOLD)
+         { // Define a suitable threshold
+            // Activate buzzer
+            gpio_put(BUZZER_PIN, 1);
+            sleep_ms(1000);     
+             gpio_put(BUZZER_PIN, 0);
+            // Check path to the left
+            move_servo(LEFT_ANGLE); // Define LEFT_ANGLE
+            sleep_ms(1000);          // Wait for the servo to move and sensor to stabilize
+            float left_distance = read_ultrasonic();
 
-            //  Wait before next measurement
-                sleep_ms(500);
+            // Check path to the right
+            move_servo(RIGHT_ANGLE); // Define RIGHT_ANGLE
+            sleep_ms(1000);           // Wait for the servo to move and sensor to stabilize
+            float right_distance = read_ultrasonic();
+
+
+
+            // Compare distances and activate the corresponding vibration motor
+            if (left_distance > right_distance)
+            {
+               gpio_put(LEFT_VIBRATION_MOTOR_PIN, 1);
+               gpio_put(RIGHT_VIBRATION_MOTOR_PIN, 0);
+            }
+            else if (left_distance < right_distance)
+
+            {
+               gpio_put(LEFT_VIBRATION_MOTOR_PIN, 0);
+               gpio_put(RIGHT_VIBRATION_MOTOR_PIN, 1);
+            }
+            else{
+                 gpio_put(LEFT_VIBRATION_MOTOR_PIN, 1);
+               gpio_put(RIGHT_VIBRATION_MOTOR_PIN, 1);
+            }
+               move_servo(90); 
+
+          //  move_servo(0); 
+
+
+         
+         // else
+         // {
+         //    // Deactivate all alert systems
+         //    gpio_put(BUZZER_PIN, 0);
+         //    gpio_put(LEFT_VIBRATION_MOTOR_PIN, 0);
+         //    gpio_put(RIGHT_VIBRATION_MOTOR_PIN, 0);
+         // }
+      }
+
+      sleep_ms(1000); // Main loop delay
+   // }
+   // while (true){
+   //    if(read_ir_sensor()==  1){
+   //   gpio_put (BUZZER_PIN, 0);
+   //    }
+   //    else{
+   //       gpio_put (BUZZER_PIN, 1);
+   //    }
+   //    move_servo(-90);
+   //    sleep_ms(500);   //    move_servo(90);
+   // //   gpio_put (LEFT_VIBRATION_MOTOR_PIN, 1);
+   // //    gpio_put (RIGHT_VIBRATION_MOTOR_PIN, 1);
+   //   float distance = read_ultrasonic();
+   //     if(distance<30){
+   //              gpio_put(BUZZER_PIN, true);
+   //            sleep_ms(1000);  //Buzzer on for 100ms
+   //             gpio_put(BUZZER_PIN, false);
+   //       sleep_ms(500);
+   //        }
+   //              printf("Distance: %.2f cm\n", distance);
+
+   //          //  Wait before next measurement
+   //              sleep_ms(500);
  
    }
 }
